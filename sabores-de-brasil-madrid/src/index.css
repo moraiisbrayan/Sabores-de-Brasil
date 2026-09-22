@@ -1,0 +1,90 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root { color-scheme: light; }
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: calc(72px + env(safe-area-inset-top, 0px));
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    @apply bg-cream font-sans text-coffee antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  ::selection { background: #C68B4B; color: #241710; }
+  :focus-visible { outline: 2px solid #C68B4B; outline-offset: 3px; border-radius: 2px; }
+  img { max-width: 100%; }
+}
+
+@layer components {
+  .wrap { @apply mx-auto w-full max-w-site px-5 md:px-10; }
+  .btn {
+    @apply inline-flex h-12 items-center justify-center gap-2.5 whitespace-nowrap rounded-full px-7 text-[14px] font-medium tracking-[0.01em] transition-[background-color,color,border-color,transform] duration-300;
+  }
+  .btn:active { transform: scale(0.98); }
+  .btn-dark { @apply bg-espresso text-cream hover:bg-roast; box-shadow: inset 0 1px 0 rgba(255,255,255,.06); }
+  .btn-caramel { @apply bg-caramel text-espresso hover:bg-[#D39B5C]; box-shadow: 0 10px 30px -12px rgba(198,139,75,.55), inset 0 1px 0 rgba(255,255,255,.25); }
+  .btn-line { @apply border border-coffee/25 text-coffee hover:border-coffee/60 hover:bg-coffee/[0.04]; }
+  .btn-light { @apply bg-cream text-ink hover:bg-white; }
+  .btn-ghost-light { @apply border border-cream/30 text-cream hover:border-cream/70 hover:bg-cream/[0.06]; }
+  .navlink { position: relative; }
+  .navlink::after {
+    content: ''; position: absolute; left: 0; right: 0; bottom: -6px; height: 1px;
+    background: currentColor; transform: scaleX(0); transform-origin: right;
+    transition: transform .45s cubic-bezier(.2,.7,.2,1);
+  }
+  .navlink:hover::after { transform: scaleX(1); transform-origin: left; }
+  .h-display { @apply font-display font-normal leading-[0.95] tracking-[-0.015em]; text-wrap: balance; }
+}
+
+/* textura de papel, muito discreta */
+.grain { position: relative; isolation: isolate; }
+.grain::before {
+  content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none; opacity: .07;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+.grain-dark::before { opacity: .10; mix-blend-mode: screen; }
+
+/* luz quente de luminária, bem suave */
+.lamp { position: relative; }
+.lamp::after {
+  content: ''; position: absolute; inset: 0; pointer-events: none; z-index: 0;
+  background:
+    radial-gradient(60% 55% at 78% 30%, rgba(214,150,80,.20), transparent 70%),
+    radial-gradient(45% 50% at 10% 90%, rgba(198,139,75,.10), transparent 70%);
+}
+.lamp > * { position: relative; z-index: 1; }
+
+/* fotos com leve calor e cantos macios */
+.photo { border-radius: 22px; }
+.arch { border-radius: 999px 999px 26px 26px; }
+@media (max-width: 640px) { .photo { border-radius: 16px; } }
+
+/* reveals */
+.reveal { transition: opacity .9s cubic-bezier(.2,.7,.2,1), transform .9s cubic-bezier(.2,.7,.2,1), clip-path 1.2s cubic-bezier(.7,0,.2,1); }
+.reveal-up { opacity: 0; transform: translateY(26px); }
+.reveal-fade { opacity: 0; }
+.reveal-img { clip-path: inset(18% 0 0 0); opacity: 0; }
+.reveal-img img { transform: scale(1.08); transition: transform 1.6s cubic-bezier(.2,.7,.2,1); }
+.reveal.is-in { opacity: 1; transform: none; clip-path: inset(0 0 0 0); }
+.reveal-img.is-in img { transform: scale(1); }
+
+/* entrada do hero: o único momento orquestrado */
+@keyframes rise { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: none; } }
+@keyframes unveil { from { clip-path: inset(0 0 100% 0); } to { clip-path: inset(0 0 0 0); } }
+.hero-in { animation: rise 1s cubic-bezier(.2,.7,.2,1) both; }
+.hero-unveil { animation: unveil 1.4s cubic-bezier(.7,0,.2,1) .15s both; }
+
+@keyframes ping-soft { 0% { transform: scale(.6); opacity: .55; } 100% { transform: scale(2.4); opacity: 0; } }
+.pin-ping { animation: ping-soft 2.4s cubic-bezier(.2,.7,.2,1) infinite; transform-origin: center; transform-box: fill-box; }
+
+.no-scrollbar { scrollbar-width: none; }
+.no-scrollbar::-webkit-scrollbar { display: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .reveal, .reveal img { opacity: 1 !important; transform: none !important; clip-path: none !important; transition: none !important; }
+  .hero-in, .hero-unveil, .pin-ping { animation: none !important; }
+}
